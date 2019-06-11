@@ -4,18 +4,18 @@ import './app.css';
 import AppHeader from '../appHeader';
 import SearchPanel from '../searchPanel';
 import AppTable from '../appTable';
+import GithubStargazerService from '../../services/githubStargazerService';
+
+
 
 export default class App extends Component {
 
+  githubStargazer = new GithubStargazerService();
+
   state = {
-    stats: [
-      { label: 'vuejs/vue', stars: '139913', id: '0' },
-      { label: 'facebook/react', stars: '130129', id: '1' },
-      { label: 'emberjs/ember.js', stars: '21005', id: '2' }
-    ]
+    stats: [],
+    error: false
   };
-  
-  currentId = 3;
 
   onDeleted = (id) => {
     this.setState(({stats}) => {
@@ -28,33 +28,60 @@ export default class App extends Component {
         stats: newArrey
       }
     });
-  }
+  };
 
-  addRepository = (text) => {
-    this.setState(({stats}) => {
-
-      let randomCount = Math.floor(Math.random() * 150000) + 1; 
-      let newArrey = [
-        ...stats.slice(0), 
-        { label: text, stars: randomCount, id: this.currentId }
-      ];
-
-      const sortArrey = newArrey.sort(function(a, b) {return b.stars - a.stars });
-      
+  offError = (bln) => {
+    this.setState(({error}) => {
       return {
-        stats: sortArrey
+        error: false
       }
-
     });
-    this.currentId += 1;
   }
+
+  onError = (err) => {
+    this.setState(({error}) => {
+      return {
+        error: true
+      }
+    });
+  };
+
+  findeRepository = (url) => {
+    // Test uniqueness URL
+    const uniquenessURLTest = this.state.stats.findIndex((el) => el.label === url);
+    if(!uniquenessURLTest) { 
+      return;
+    }
+
+    if(url === ''){
+      return;
+    }
+
+    this.githubStargazer
+      .getResource(url)
+      .then((res) => {
+        this.setState(({ stats }) => {
+          let newArrey = [
+            ...stats.slice(0), 
+            { label: res.full_name, stars: res.stargazers_count, id: res.id }
+          ];
+          const sortArrey = newArrey.sort(function(a, b) {return b.stars - a.stars });
+          return {
+            stats: sortArrey
+          }
+        });
+      })
+      .catch(this.onError);
+  };
 
   render(){
     return (
       <div className="container">
         <AppHeader />
         <SearchPanel 
-          addRepository={this.addRepository}/>
+          addRepository={this.findeRepository}
+          error={this.offError}
+          errorText={this.state.error}/>
         <AppTable 
           stats={ this.state.stats } 
           onDeleted={this.onDeleted}/>
