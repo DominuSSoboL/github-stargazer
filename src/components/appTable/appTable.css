@@ -1,0 +1,75 @@
+table.table {
+  margin-top: 30px;
+  border: 1px solid #dee2e6;
+}
+
+thead {
+  background-color: rgba(0,0,0,.075);
+}
+
+table td:first-child {
+  width: 70%;
+}
+
+table button {
+  float: right;
+
+  margin-left: 20px;
+}
+
+/*Delete repository button*/
+
+.remuve-repository {
+  position: relative;
+
+  display: block;
+  width: 20px;
+  height: 20px;
+
+  background-color: transparent;
+  border: none;
+}
+
+.remuve-repository span::before,
+.remuve-repository span::after {
+  position: absolute;
+  top: 50%; margin-top: -1px;
+  left: 50%; margin-left: -10px;
+
+  width: 20px;
+  height: 1px;
+
+  background-color: #000000;
+}
+
+.remuve-repository span::before,
+.remuve-repository span::after {
+  content: '';
+
+  display: block;
+
+  transition: 0.2s;
+}
+
+.remuve-repository span::before {
+  transform: translateY(-5px);
+  transform: rotate(45deg);
+}
+
+.remuve-repository span::after {
+  transform: translateY(5px);
+  transform: rotate(-45deg);
+}
+
+.remuve-repository:hover > span::before,
+.remuve-repository:hover > span::after {
+  background-color: #c4c4c4;
+}
+
+.remuve-repository:focus {
+  outline: none;
+}
+.remuve-repository:focus > span::before,
+.remuve-repository:focus > span::after {
+  background-color: #949494;
+}
