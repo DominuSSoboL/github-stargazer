@@ -1,92 +1,74 @@
 import React, { Component } from 'react';
+
 import './app.css';
-
-import AppHeader from '../appHeader';
-import SearchPanel from '../searchPanel';
-import AppTable from '../appTable';
-import GithubStargazerService from '../../services/githubStargazerService';
-
-
+import Header from '../Header';
+import SearchPanel from '../SearchPanel';
+import Table from '../Table';
+import githubStargazer from '../../services/GithubAPIService';
 
 export default class App extends Component {
-
-  githubStargazer = new GithubStargazerService();
-
   state = {
     stats: [],
     error: false
   };
 
-  onDeleted = (id) => {
+  handleDelete = (id) => {
     this.setState(({stats}) => {
-      const idx = stats.findIndex((el) => el.id === id);
-      const newArrey = [
-        ...stats.slice(0, idx), 
-        ...stats.slice(idx + 1)
+      const index = stats.findIndex((element) => element.id === id);
+      const newStats = [
+        ...stats.slice(0, index), 
+        ...stats.slice(index + 1)
       ];
       return {
-        stats: newArrey
+        stats: newStats
       }
     });
   };
 
-  offError = (bln) => {
-    this.setState(({error}) => {
-      return {
-        error: false
-      }
-    });
-  }
-
-  onError = (err) => {
-    this.setState(({error}) => {
-      return {
-        error: true
-      }
-    });
+  hiddenError = () => {
+    this.setState(({error}) => ({error: false}));
   };
 
-  findeRepository = (url) => {
-    // Test uniqueness URL
-    const uniquenessURLTest = this.state.stats.findIndex((el) => el.label === url);
-    if(!uniquenessURLTest) { 
-      return;
-    }
+  showError = () => {
+    this.setState(({error}) => ({error: true}));
+  };
 
-    if(url === ''){
-      return;
-    }
+  findRepository = (url) => {
+    const isUrlUniq = this.state.stats.findIndex((item) => item.label === url);
 
-    this.githubStargazer
-      .getResource(url)
-      .then((res) => {
-        this.setState(({ stats }) => {
-          let newArrey = [
-            ...stats.slice(0), 
-            { label: res.full_name, stars: res.stargazers_count, id: res.id }
-          ];
-          const sortArrey = newArrey.sort(function(a, b) {return b.stars - a.stars });
-          return {
-            stats: sortArrey
-          }
-        });
-      })
-      .catch(this.onError);
+    if(!isUrlUniq || url === '') return;
+
+    githubStargazer
+    .getRepository(url)
+    .then((response) => {
+      this.setState(({ stats }) => {
+        const newStats = [
+          ...stats,
+          {label: response.full_name, stars: response.stargazers_count, id: response.id}
+        ];
+        const sortStats = newStats.sort((a, b) => (b.stars - a.stars));
+        return {
+          stats: sortStats
+        }
+      });
+    })
+    .catch(this.showError);
   };
 
   render(){
     return (
       <div className="container">
-        <AppHeader />
+        <Header />
         <SearchPanel 
-          addRepository={this.findeRepository}
-          error={this.offError}
-          errorText={this.state.error}/>
-        <AppTable 
-          stats={ this.state.stats } 
-          onDeleted={this.onDeleted}/>
+          addRepository={this.findRepository}
+          hiddenError={this.hiddenError}
+          showError={this.state.error}
+        />
+        <Table 
+          stats={this.state.stats} 
+          onDelete={this.handleDelete}
+        />
       </div>
     );
-  };
-  
+  };  
 };

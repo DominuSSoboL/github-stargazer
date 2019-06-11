@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
+
 import './appTable.css';
-import AppTableRow from '../appTableRow';
+import TableRow from '../TableRow';
 
 export default class AppTable extends Component {
-
   render() {
-    const { stats, onDeleted } = this.props;
-
-    const elements = stats.map((item) => {
-      return (
-        <AppTableRow 
-          key={ item.id } 
-          item={ item }
-          onDeleted={() => onDeleted(item.id)}/>
-      );
-    });
+    const { stats, onDelete } = this.props;
 
     return (
       <table className="table">
@@ -25,7 +16,14 @@ export default class AppTable extends Component {
           </tr>
         </thead>
         <tbody>
-          { elements }
+          { 
+            stats.map((item) => (
+              <TableRow 
+                key={item.id} 
+                item={item}
+                onDelete={() => onDelete(item.id)}/>
+            ))
+          }
         </tbody>
       </table>
     );

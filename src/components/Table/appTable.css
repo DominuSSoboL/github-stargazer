@@ -1,5 +1,6 @@
 table.table {
   margin-top: 30px;
+
   border: 1px solid #dee2e6;
 }
 
@@ -17,8 +18,6 @@ table button {
   margin-left: 20px;
 }
 
-/*Delete repository button*/
-
 .remuve-repository {
   position: relative;
 
@@ -33,11 +32,13 @@ table button {
 .remuve-repository span::before,
 .remuve-repository span::after {
   position: absolute;
-  top: 50%; margin-top: -1px;
-  left: 50%; margin-left: -10px;
+  top: 50%;
+  left: 50%;
 
   width: 20px;
   height: 1px;
+  margin-top: -1px;
+  margin-left: -10px;
 
   background-color: #000000;
 }
