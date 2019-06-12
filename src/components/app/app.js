@@ -34,9 +34,9 @@ export default class App extends Component {
   };
 
   findRepository = (url) => {
-    const isUrlUniq = this.state.stats.findIndex((item) => item.label === url);
+    const isNotUniqUrl = this.state.stats.findIndex((item) => item.label === url)===-1;
 
-    if(!isUrlUniq || url === '') return;
+    if(!isNotUniqUrl || url === '') return;
 
     githubStargazer
     .getRepository(url)
@@ -53,6 +53,7 @@ export default class App extends Component {
       });
     })
     .catch(this.showError);
+    console.log(this.state.stats);
   };
 
   render(){
