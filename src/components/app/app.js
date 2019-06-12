@@ -53,7 +53,6 @@ export default class App extends Component {
       });
     })
     .catch(this.showError);
-    console.log(this.state.stats);
   };
 
   render(){
