@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import './app.css';
 import Header from '../Header';
-import SearchPanel from '../SearchPanel';
+import SearchPanel from '../searchPanel';
 import Table from '../Table';
 import githubStargazer from '../../services/GithubAPIService';
 
@@ -16,7 +16,7 @@ export default class App extends Component {
     this.setState(({stats}) => {
       const index = stats.findIndex((element) => element.id === id);
       const newStats = [
-        ...stats.slice(0, index), 
+        ...stats.slice(0, index),
         ...stats.slice(index + 1)
       ];
       return {
@@ -59,16 +59,16 @@ export default class App extends Component {
     return (
       <div className="container">
         <Header />
-        <SearchPanel 
+        <SearchPanel
           addRepository={this.findRepository}
           hiddenError={this.hiddenError}
           showError={this.state.error}
         />
-        <Table 
-          stats={this.state.stats} 
+        <Table
+          stats={this.state.stats}
           onDelete={this.handleDelete}
         />
       </div>
     );
-  };  
+  };
 };
